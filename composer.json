@@ -1,0 +1,23 @@
+{
+    "name": "tigron/skeleton-file-pdf",
+    "description": "Tigron PDF utilities",
+    "type": "library",
+    "require-dev": {
+		"tigron/skeleton-file": "dev-master"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tigron BVBA",
+            "email": "support@tigron.be"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/tigron/skeleton-file-pdf",
+        "issues": "https://github.com/tigron/skeleton-file-pdf/issues"
+    },
+    "autoload": {
+        "psr-4": { "Skeleton\\File\\Pdf\\": "lib/Skeleton/File/Pdf" }
+    }
+
+}
