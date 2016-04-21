@@ -12,34 +12,29 @@ Installation via composer:
 
 ## Howto
 
-/**
- * Grab a file
- */
-$file = \Skeleton\File\File::get_by_id(1);
 
-/**
- * Check if the file is a PDF
- */
-if (!$file->is_pdf()) {
-	return;
-}
+Get a PDF 
 
-/**
- * Count the number of pages in the PDF
- */
-$page_count = $file->count_pages();
+	$file = \Skeleton\File\File::get_by_id(1);
 
-/**
- * Extract all pages from a PDF
- */
-$pages = $file->extract_pages();
+Check if the file is a PDF
 
-/**
- * Merge different PDF documents into 1 PDF
- */
-$new_pdf = \Skeleton\File\Pdf\Pdf::merge('new_document.pdf', array_reverse($pages));
+	if (!$file->is_pdf()) {
+		return;
+	}
 
-/**
- * Append a page to the PDF
- */
-$new_pdf->append(array_shift($pages));
+Count the number of pages in the PDF
+
+	$page_count = $file->count_pages();
+
+Extract all pages from a PDF
+
+	$pages = $file->extract_pages();
+
+Merge different PDF documents into 1 PDF
+
+	$new_pdf = \Skeleton\File\Pdf\Pdf::merge('new_document.pdf', array_reverse($pages));
+
+Append a page to the PDF
+
+	$new_pdf->append(array_shift($pages));
