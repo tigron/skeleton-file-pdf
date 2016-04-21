@@ -3,7 +3,7 @@
     "description": "Tigron PDF utilities",
     "type": "library",
     "require": {
-	"tigron/skeleton-file": "dev-master",
+	"tigron/skeleton-file": "*",
         "tecnickcom/tcpdf": "^6.2",
         "setasign/fpdi": "^1.6",
 	"setasign/fpdi-tcpdf": "1.*"
