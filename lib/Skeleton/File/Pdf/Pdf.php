@@ -58,6 +58,31 @@ class Pdf extends File {
 	}
 
 	/**
+	 * Rotate
+	 *
+	 * @access public
+	 * @param int $degrees
+	 */
+	public function rotate($degrees) {
+		$pdf = new \FPDI();
+		$pagecount = $pdf->setSourceFile($this->get_path());
+		for ($i=1; $i <= $pagecount; $i++) {
+			$templateId = $pdf->importPage($i);
+			$size = $pdf->getTemplateSize($templateId);
+			if ($size['w'] > $size['h']) {
+				$pdf->AddPage('L', [ $size['w'], $size['h'], 'Rotate' => $degrees ]);
+			} else {
+				$pdf->AddPage('P', [ $size['w'], $size['h'], 'Rotate' => $degrees ]);
+			}
+			$pdf->useTemplate($templateId);
+		}
+		$pdf->Rotate($degrees);
+		$content = $pdf->Output('ignored', 'S');
+		$file = \Skeleton\File\File::store('page_' . $i . '.pdf', $content);
+		return $file;
+	}
+
+	/**
 	 * Append a PDF to this PDF
 	 *
 	 * @access public
@@ -66,9 +91,7 @@ class Pdf extends File {
 	public function append(\Skeleton\File\Pdf\Pdf $pdf) {
 		$result_pdf = new \FPDI();
 		if (!file_exists($this->get_path())) {
-			print_r($this);
-			echo $this->get_path();
-			die();
+			throw new \Exception('Cannot append file. Filename "' . $this->get_path() . '" not found');
 		}
 		$page_count = $result_pdf->setSourceFile($this->get_path());
 
