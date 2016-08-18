@@ -13,7 +13,7 @@ Installation via composer:
 ## Howto
 
 
-Get a PDF 
+Get a PDF
 
 	$file = \Skeleton\File\File::get_by_id(1);
 
@@ -38,3 +38,7 @@ Merge different PDF documents into 1 PDF
 Append a page to the PDF
 
 	$new_pdf->append(array_shift($pages));
+
+Rotate the pages of a PDF document (degrees clockwise)
+
+	$pdf->rotate(90)
