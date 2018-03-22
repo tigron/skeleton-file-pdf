@@ -9,6 +9,8 @@
 namespace Skeleton\File\Pdf;
 
 use Skeleton\File\File;
+use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\PdfReader;
 
 class Pdf extends File {
 
@@ -18,8 +20,7 @@ class Pdf extends File {
 	 * @access public
 	 */
 	public function count_pages() {
-		class_exists('TCPDF', true);
-		$pdf = new \FPDI();
+		$pdf = new TcpdfFpdi();
 		$page_count = $pdf->setSourceFile($this->get_path());
 		return $page_count;
 	}
@@ -37,15 +38,15 @@ class Pdf extends File {
 
 		$pages = [];
 		for ($i=1; $i<= $this->count_pages(); $i++) {
-			$pdf = new \FPDI();
+			$pdf = new TcpdfFpdi();
 			$pdf->setSourceFile($this->get_path());
 			$templateId = $pdf->importPage($i);
 			$size = $pdf->getTemplateSize($templateId);
 			// create a page (landscape or portrait depending on the imported page size)
-			if ($size['w'] > $size['h']) {
-				$pdf->AddPage('L', [ $size['w'], $size['h'] ]);
+			if ($size['width'] > $size['height']) {
+				$pdf->AddPage('L', [ $size['width'], $size['height'] ]);
 			} else {
-				$pdf->AddPage('P', [ $size['w'], $size['h'] ]);
+				$pdf->AddPage('P', [ $size['width'], $size['height'] ]);
 			}
 			// use the imported page
 			$pdf->useTemplate($templateId);
@@ -64,15 +65,15 @@ class Pdf extends File {
 	 * @param int $degrees
 	 */
 	public function rotate($degrees) {
-		$pdf = new \FPDI();
+		$pdf = new TcpdfFpdi();
 		$pagecount = $pdf->setSourceFile($this->get_path());
 		for ($i=1; $i <= $pagecount; $i++) {
 			$templateId = $pdf->importPage($i);
 			$size = $pdf->getTemplateSize($templateId);
-			if ($size['w'] > $size['h']) {
-				$pdf->AddPage('L', [ $size['w'], $size['h'], 'Rotate' => $degrees ]);
+			if ($size['width'] > $size['height']) {
+				$pdf->AddPage('L', [ $size['width'], $size['height'], 'Rotate' => $degrees ]);
 			} else {
-				$pdf->AddPage('P', [ $size['w'], $size['h'], 'Rotate' => $degrees ]);
+				$pdf->AddPage('P', [ $size['width'], $size['height'], 'Rotate' => $degrees ]);
 			}
 			$pdf->useTemplate($templateId);
 		}
@@ -89,7 +90,7 @@ class Pdf extends File {
 	 * @param \Skeleton\File\Pdf\Pdf $pdf
 	 */
 	public function append(\Skeleton\File\Pdf\Pdf $pdf) {
-		$result_pdf = new \FPDI();
+		$result_pdf = new TcpdfFpdi();
 		if (!file_exists($this->get_path())) {
 			throw new \Exception('Cannot append file. Filename "' . $this->get_path() . '" not found');
 		}
@@ -102,10 +103,10 @@ class Pdf extends File {
 			$templateId = $result_pdf->importPage($i);
 			$size = $result_pdf->getTemplateSize($templateId);
 			// create a page (landscape or portrait depending on the imported page size)
-			if ($size['w'] > $size['h']) {
-				$result_pdf->AddPage('L', [ $size['w'], $size['h'] ]);
+			if ($size['width'] > $size['height']) {
+				$result_pdf->AddPage('L', [ $size['width'], $size['height'] ]);
 			} else {
-				$result_pdf->AddPage('P', [ $size['w'], $size['h'] ]);
+				$result_pdf->AddPage('P', [ $size['width'], $size['height'] ]);
 			}
 			// use the imported page
 			$result_pdf->useTemplate($templateId);
@@ -120,10 +121,10 @@ class Pdf extends File {
 			$templateId = $result_pdf->importPage($i);
 			$size = $result_pdf->getTemplateSize($templateId);
 			// create a page (landscape or portrait depending on the imported page size)
-			if ($size['w'] > $size['h']) {
-				$result_pdf->AddPage('L', [ $size['w'], $size['h'] ]);
+			if ($size['width'] > $size['height']) {
+				$result_pdf->AddPage('L', [ $size['width'], $size['height'] ]);
 			} else {
-				$result_pdf->AddPage('P', [ $size['w'], $size['h'] ]);
+				$result_pdf->AddPage('P', [ $size['width'], $size['height'] ]);
 			}
 			// use the imported page
 			$result_pdf->useTemplate($templateId);
