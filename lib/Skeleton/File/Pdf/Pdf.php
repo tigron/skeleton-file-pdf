@@ -91,6 +91,8 @@ class Pdf extends File {
 	 */
 	public function append(\Skeleton\File\Pdf\Pdf $pdf) {
 		$result_pdf = new TcpdfFpdi();
+		$result_pdf->setPrintHeader(false);
+		$result_pdf->setPrintFooter(false);
 		if (!file_exists($this->get_path())) {
 			throw new \Exception('Cannot append file. Filename "' . $this->get_path() . '" not found');
 		}
