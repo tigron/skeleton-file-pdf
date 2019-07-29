@@ -39,6 +39,8 @@ class Pdf extends File {
 		$pages = [];
 		for ($i=1; $i<= $this->count_pages(); $i++) {
 			$pdf = new TcpdfFpdi();
+			$pdf->setPrintHeader(false);
+			$pdf->setPrintFooter(false);
 			$pdf->setSourceFile($this->get_path());
 			$templateId = $pdf->importPage($i);
 			$size = $pdf->getTemplateSize($templateId);
@@ -66,6 +68,8 @@ class Pdf extends File {
 	 */
 	public function rotate($degrees) {
 		$pdf = new TcpdfFpdi();
+		$pdf->setPrintHeader(false);
+		$pdf->setPrintFooter(false);
 		$pagecount = $pdf->setSourceFile($this->get_path());
 		for ($i=1; $i <= $pagecount; $i++) {
 			$templateId = $pdf->importPage($i);
