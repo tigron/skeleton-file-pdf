@@ -21,7 +21,13 @@ class Pdf extends File {
 	 */
 	public function count_pages() {
 		$pdf = new TcpdfFpdi();
-		$page_count = $pdf->setSourceFile($this->get_path());
+
+		try {
+			$page_count = $pdf->setSourceFile($this->get_path());
+		} catch (\setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException $e) {
+			return 0;
+		}
+
 		return $page_count;
 	}
 
