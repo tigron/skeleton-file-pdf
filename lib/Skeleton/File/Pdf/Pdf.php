@@ -170,9 +170,15 @@ class Pdf extends File {
 			throw new \Exception('At least 1 pdf has to be given to merge');
 		}
 
+		if (!class_exists(Config::$pdf_interface)) {
+			throw new \Exception('Unknown classname given in Config::$pdf_interface');
+		}
+
+		$config_class = new Config::$pdf_interface;
+
 		foreach ($pdfs as $pdf) {
-			if (get_class($pdf) != 'Skeleton\File\Pdf\Pdf') {
-				throw new \Exception('Only PDF documents can be merged' . get_class($pdf));
+			if (get_class($pdf) != get_class($config_class)) {
+				throw new \Exception('Only PDF documents can be merged ' . get_class($pdf));
 			}
 		}
 
