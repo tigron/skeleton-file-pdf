@@ -4,13 +4,13 @@
  *
  * @author Christophe Gosiau <christophe@tigron.be>
  * @author Gerry Demaret <gerry@tigron.be>
+ * @author David Vandemaele <david@tigron.be>
  */
 
 namespace Skeleton\File\Pdf;
 
 use Skeleton\File\File;
-use setasign\Fpdi\TcpdfFpdi;
-use setasign\Fpdi\PdfReader;
+use setasign\Fpdi\Tcpdf\Fpdi;
 
 class Pdf extends File {
 
@@ -18,9 +18,10 @@ class Pdf extends File {
 	 * Get the number of pages
 	 *
 	 * @access public
+	 * @return int
 	 */
-	public function count_pages() {
-		$pdf = new TcpdfFpdi();
+	public function count_pages(): int {
+		$pdf = new Fpdi();
 
 		try {
 			$page_count = $pdf->setSourceFile($this->get_path());
@@ -37,25 +38,27 @@ class Pdf extends File {
 	 * @access public
 	 * @return array $pdfs
 	 */
-	public function extract_pages() {
+	public function extract_pages(): array {
 		if ($this->count_pages() == 0) {
 			throw new \Exception('Cannot extract pages, this PDF contains 0 pages');
 		}
 
 		$pages = [];
-		for ($i=1; $i<= $this->count_pages(); $i++) {
-			$pdf = new TcpdfFpdi();
+		for ($i = 1; $i <= $this->count_pages(); $i++) {
+			$pdf = new Fpdi();
 			$pdf->setPrintHeader(false);
 			$pdf->setPrintFooter(false);
 			$pdf->setSourceFile($this->get_path());
 			$templateId = $pdf->importPage($i);
 			$size = $pdf->getTemplateSize($templateId);
+
 			// create a page (landscape or portrait depending on the imported page size)
 			if ($size['width'] > $size['height']) {
-				$pdf->AddPage('L', [ $size['width'], $size['height'] ]);
+				$pdf->AddPage('L', [$size['width'], $size['height']]);
 			} else {
-				$pdf->AddPage('P', [ $size['width'], $size['height'] ]);
+				$pdf->AddPage('P', [$size['width'], $size['height']]);
 			}
+
 			// use the imported page
 			$pdf->useTemplate($templateId);
 			$content = $pdf->Output('ignored', 'S');
@@ -63,6 +66,7 @@ class Pdf extends File {
 			$page = \Skeleton\File\File::store('page_' . $i . '.pdf', $content);
 			$pages[] = $page;
 		}
+
 		return $pages;
 	}
 
@@ -71,26 +75,28 @@ class Pdf extends File {
 	 *
 	 * @access public
 	 * @param int $degrees
+	 * @return File
 	 */
-	public function rotate($degrees) {
-		$pdf = new TcpdfFpdi();
+	public function rotate(int $degrees) {
+		$pdf = new Fpdi();
 		$pdf->setPrintHeader(false);
 		$pdf->setPrintFooter(false);
 		$pagecount = $pdf->setSourceFile($this->get_path());
-		for ($i=1; $i <= $pagecount; $i++) {
+
+		for ($i = 1; $i <= $pagecount; $i++) {
 			$templateId = $pdf->importPage($i);
 			$size = $pdf->getTemplateSize($templateId);
 			if ($size['width'] > $size['height']) {
-				$pdf->AddPage('L', [ $size['width'], $size['height'], 'Rotate' => $degrees ]);
+				$pdf->AddPage('L', [$size['width'], $size['height'], 'Rotate' => $degrees]);
 			} else {
-				$pdf->AddPage('P', [ $size['width'], $size['height'], 'Rotate' => $degrees ]);
+				$pdf->AddPage('P', [$size['width'], $size['height'], 'Rotate' => $degrees]);
 			}
 			$pdf->useTemplate($templateId);
 		}
+
 		$pdf->Rotate($degrees);
 		$content = $pdf->Output('ignored', 'S');
-		$file = \Skeleton\File\File::store('page_' . $i . '.pdf', $content);
-		return $file;
+		return \Skeleton\File\File::store('page_' . $i . '.pdf', $content);
 	}
 
 	/**
@@ -100,26 +106,30 @@ class Pdf extends File {
 	 * @param \Skeleton\File\Pdf\Pdf $pdf
 	 */
 	public function append(\Skeleton\File\Pdf\Pdf $pdf) {
-		$result_pdf = new TcpdfFpdi();
+		$result_pdf = new Fpdi();
 		$result_pdf->setPrintHeader(false);
 		$result_pdf->setPrintFooter(false);
-		if (!file_exists($this->get_path())) {
+
+		if (file_exists($this->get_path()) === false) {
 			throw new \Exception('Cannot append file. Filename "' . $this->get_path() . '" not found');
 		}
+
 		$page_count = $result_pdf->setSourceFile($this->get_path());
 
 		/**
 		 * Add the pages from this PDF
 		 */
-		for ($i=1; $i<= $page_count; $i++) {
+		for ($i = 1; $i <= $page_count; $i++) {
 			$templateId = $result_pdf->importPage($i);
 			$size = $result_pdf->getTemplateSize($templateId);
+
 			// create a page (landscape or portrait depending on the imported page size)
 			if ($size['width'] > $size['height']) {
-				$result_pdf->AddPage('L', [ $size['width'], $size['height'] ]);
+				$result_pdf->AddPage('L', [$size['width'], $size['height']]);
 			} else {
-				$result_pdf->AddPage('P', [ $size['width'], $size['height'] ]);
+				$result_pdf->AddPage('P', [$size['width'], $size['height']]);
 			}
+
 			// use the imported page
 			$result_pdf->useTemplate($templateId);
 		}
@@ -129,15 +139,17 @@ class Pdf extends File {
 		 */
 		$page_count = $result_pdf->setSourceFile($pdf->get_path());
 
-		for ($i=1; $i<= $page_count; $i++) {
+		for ($i = 1; $i <= $page_count; $i++) {
 			$templateId = $result_pdf->importPage($i);
 			$size = $result_pdf->getTemplateSize($templateId);
+
 			// create a page (landscape or portrait depending on the imported page size)
 			if ($size['width'] > $size['height']) {
-				$result_pdf->AddPage('L', [ $size['width'], $size['height'] ]);
+				$result_pdf->AddPage('L', [$size['width'], $size['height']]);
 			} else {
-				$result_pdf->AddPage('P', [ $size['width'], $size['height'] ]);
+				$result_pdf->AddPage('P', [$size['width'], $size['height']]);
 			}
+
 			// use the imported page
 			$result_pdf->useTemplate($templateId);
 		}
@@ -170,25 +182,29 @@ class Pdf extends File {
 			throw new \Exception('At least 1 pdf has to be given to merge');
 		}
 
-		if (!class_exists(Config::$pdf_interface)) {
+		if (class_exists(Config::$pdf_interface) === false) {
 			throw new \Exception('Unknown classname given in Config::$pdf_interface');
 		}
 
 		$config_class = new Config::$pdf_interface;
 
 		foreach ($pdfs as $pdf) {
-			if (get_class($pdf) != get_class($config_class)) {
-				throw new \Exception('Only PDF documents can be merged ' . get_class($pdf));
+			if (get_class($pdf) == get_class($config_class)) {
+				continue;
 			}
+
+			throw new \Exception('Only PDF documents can be merged ' . get_class($pdf));
 		}
 
 		$first = array_shift($pdfs);
 		$result = $first->copy($filename);
 		$result->name = $filename;
 		$result->save();
+
 		foreach ($pdfs as $pdf) {
 			$result->append($pdf);
 		}
+
 		return $result;
 	}
 }

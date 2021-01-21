@@ -3,10 +3,9 @@
     "description": "Tigron PDF utilities",
     "type": "library",
     "require": {
-	"tigron/skeleton-file": "*",
-        "tecnickcom/tcpdf": "^6.2",
+        "tigron/skeleton-file": "*",
+        "tecnickcom/tcpdf": "6.3.*",
         "setasign/fpdi": "^2.0",
-	"setasign/fpdi-tcpdf": "^2.0"
     },
     "license": "MIT",
     "authors": [
