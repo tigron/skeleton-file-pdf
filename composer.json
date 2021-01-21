@@ -5,7 +5,7 @@
     "require": {
         "tigron/skeleton-file": "*",
         "tecnickcom/tcpdf": "6.3.*",
-        "setasign/fpdi": "^2.0",
+        "setasign/fpdi": "^2.0"
     },
     "license": "MIT",
     "authors": [
